@@ -21,7 +21,8 @@ let editandoIndex = -1;
 const form = document.getElementById("formAluno");
 const tabela = document.querySelector("#tabelaAlunos tbody");
 
-form.onsubmit = function (event) {
+// Evento de submit com função anônima
+form.addEventListener("submit", function (event) {
   event.preventDefault();
 
   const nome = document.getElementById("nome").value;
@@ -38,16 +39,21 @@ form.onsubmit = function (event) {
 
   if (editandoIndex === -1) {
     alunos.push(aluno);
+    alert("Aluno cadastrado com sucesso!");
+    console.log("Aluno salvo:", aluno.toString());
   } else {
     alunos[editandoIndex] = aluno;
+    alert("Aluno editado com sucesso!");
+    console.log("Aluno editado:", aluno.toString());
     editandoIndex = -1;
   }
 
   form.reset();
   renderizarTabela();
-};
+});
 
-function renderizarTabela() {
+// Função para renderizar usando arrow function
+const renderizarTabela = () => {
   tabela.innerHTML = "";
 
   alunos.forEach((aluno, index) => {
@@ -59,27 +65,38 @@ function renderizarTabela() {
       <td>${aluno.curso}</td>
       <td>${aluno.notaFinal} (${aluno.isAprovado() ? "Aprovado" : "Reprovado"})</td>
       <td>
-        <button onclick="editarAluno(${index})">Editar</button>
-        <button onclick="excluirAluno(${index})">Excluir</button>
+        <button class="btn-editar">Editar</button>
+        <button class="btn-excluir">Excluir</button>
       </td>
     `;
 
     tabela.appendChild(linha);
+
+    // Eventos com funções anônimas nos botões
+    linha.querySelector(".btn-editar").addEventListener("click", function () {
+      editarAluno(index);
+    });
+
+    linha.querySelector(".btn-excluir").addEventListener("click", function () {
+      excluirAluno(index);
+    });
   });
-}
+};
 
-function editarAluno(index) {
+// Arrow function para editar
+const editarAluno = (index) => {
   const aluno = alunos[index];
-
   document.getElementById("nome").value = aluno.nome;
   document.getElementById("idade").value = aluno.idade;
   document.getElementById("curso").value = aluno.curso;
   document.getElementById("nota").value = aluno.notaFinal;
-
   editandoIndex = index;
-}
+};
 
-function excluirAluno(index) {
-  alunos.splice(index, 1);
+// Arrow function para excluir
+const excluirAluno = (index) => {
+  const alunoRemovido = alunos.splice(index, 1)[0];
+  alert("Aluno excluído com sucesso!");
+  console.log("Aluno excluído:", alunoRemovido.toString());
   renderizarTabela();
-}
+};
